@@ -6,10 +6,13 @@ const cors = require('cors');
 require('dotenv/config');
 const authJwt = require('./helpers/jwt');
 const errorHandler = require('./helpers/error-handler');
-
+const bodyParser = require("body-parser")
 
 app.use(cors());
 app.options('*', cors())
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 //middleware
 app.use(express.json())
