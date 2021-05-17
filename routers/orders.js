@@ -52,10 +52,10 @@ router.post(`/`, async (req, res)=>{
 
     let order = new Order({
         orderItems: orderItemsIdsResolved,
-        shippingAddress1: req.body.shippingAddress1,
-        shippingAddress2: req.body.shippingAddress2,
-        city: req.body.city,
+        street: req.body.street,
+        apartment: req.body.apartment,
         zip: req.body.zip,
+        city: req.body.city,
         country: req.body.country,
         phone: req.body.phone,
         status: req.body.status,
