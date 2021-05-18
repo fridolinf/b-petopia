@@ -20,7 +20,6 @@ app.use(morgan('tiny'));
 app.use(authJwt());
 app.use('/public/uploads', express.static(__dirname + '/public/uploads'));
 app.use(errorHandler);
-app.get('/favicon.ico', (req, res) => res.status(204));
 
 //Routes
 const categoriesRoutes = require('./routers/categories');
