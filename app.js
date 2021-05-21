@@ -6,10 +6,13 @@ const cors = require('cors');
 require('dotenv/config');
 const authJwt = require('./helpers/jwt');
 const errorHandler = require('./helpers/error-handler');
-
+const bodyParser = require("body-parser")
 
 app.use(cors());
 app.options('*', cors())
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 //middleware
 app.use(express.json())
@@ -26,6 +29,8 @@ const ordersRoutes = require('./routers/orders');
 const artikelsRoutes = require('./routers/artikels');
 const marketsRoutes = require('./routers/markets');
 const api = process.env.API_URL;
+
+const port = process.env.PORT || 3001;
 
 app.use(`${api}/categories`, categoriesRoutes);
 app.use(`${api}/products`, productsRoutes);
@@ -47,7 +52,7 @@ mongoose.connect(process.env.CONNECTION_STRING, {
 })
 
 //Server
-app.listen(3001, ()=>{
+app.listen(port, ()=>{
 
     console.log('server is running http://localhost:3001');
 })

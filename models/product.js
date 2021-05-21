@@ -18,13 +18,23 @@ const productSchema = mongoose.Schema({
         type: String,
         default: ''
     },
-    image: {
+    image1: {
+        type: String,
+        default: '',
+        required: true
+    },
+    image2: {
         type: String,
         default: ''
     },
-    images: [{
-        type: String
-    }],
+    image3: {
+        type: String,
+        default: ''
+    },
+    image4: {
+        type: String,
+        default: ''
+    },
     tipe: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Tipe',
