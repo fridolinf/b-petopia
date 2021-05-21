@@ -178,7 +178,7 @@ router.put('/supplier/updateproduk/:id', uploadOptions.single('image'),async (re
 
     const product = await Product.findById(req.params.id);
     if(!product) return res.status(400).send('Invalid Product');
- 
+//  frelly
 
     const updatedProduct = await Product.findByIdAndUpdate(
         req.params.id,
