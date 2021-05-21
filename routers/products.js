@@ -35,7 +35,28 @@ const uploadOptions = multer({ storage: storage })
 //GET PRODUCTS ALL ->ANDROID
 router.get(`/`, async (req, res) =>{
     // localhost:3000/api/v1/products?categories=2342342,234234
-    let filter = {};
+   
+    let filter = { };
+    if(req.query.categories)
+    {
+         filter = {category: req.query.categories.split(',')}
+    }
+
+    const productList = await Product.find(filter).populate('category')
+    .populate('market');
+
+    if(!productList) {
+        res.status(500).json({success: false})
+    } 
+    res.send(productList);
+   
+})
+router.get(`/:idmarket`, async (req, res) =>{
+    const market = await Market.findById(req.params.id)
+    let filter = {
+        market: market.id
+    };
+    
     if(req.query.categories)
     {
          filter = {category: req.query.categories.split(',')}
@@ -48,6 +69,18 @@ router.get(`/`, async (req, res) =>{
     } 
     res.send(productList);
 })
+// DETAIL PRODUCT
+router.get(`/:id`, async (req, res) =>{
+    const product = await Product.findById(req.params.id)
+    .populate('category')
+    .populate('market');
+
+    if(!product) {
+        res.status(500).json({success: false})
+    } 
+    res.send(product);
+})
+
 
 //GET PRODUCTS TAB HABISPAKAI
 router.get(`/:id/habispakai/`, async (req, res) => {
@@ -127,15 +160,6 @@ router.get(`/:id/grooming/`, async (req, res) => {
     res.send(productList);
 })
 
-// DETAIL PRODUCT
-router.get(`/:id`, async (req, res) =>{
-    const product = await Product.findById(req.params.id).populate('category');
-
-    if(!product) {
-        res.status(500).json({success: false})
-    } 
-    res.send(product);
-})
 
 // Tambah Produk pake id market
 router.post(`/supplier/tambahproduk/:id`, uploadOptions.single('image'),  async (req, res) =>{
