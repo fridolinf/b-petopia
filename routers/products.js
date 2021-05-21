@@ -61,7 +61,8 @@ router.get(`/:idmarket`, async (req, res) =>{
          filter = {category: req.query.categories.split(',')}
     }
 
-    const productList = await Product.find(filter).populate('category');
+    const productList = await Product.find(filter)
+    .populate('category');
 
     if(!productList) {
         res.status(500).json({success: false})
