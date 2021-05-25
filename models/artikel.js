@@ -14,13 +14,10 @@ const artikelSchema = mongoose.Schema({
         type: String,
         default: true
     },
-    image: {
+    image1: {
         type: String,
-        default: ''
-    },
-    isShowed: {
-        type: Boolean,
-        default: false,
+        default: '',
+        required: true
     },
     dateCreated: {
         type: Date,
