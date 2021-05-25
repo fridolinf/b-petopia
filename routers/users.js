@@ -5,19 +5,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Market } = require('../models/market');
 
-router.get(`/`, async (req, res) => {
-    const userList = await User.find().select('-passwordHash');
-    try {
-        if (!userList) {
-            res.status(500).json({ success: false })
-        }
-        res.send(userList);
-
-    } catch (error) {
-
-    }
-})
-
 router.get('/:id', async(req,res)=>{
     const user = await User.findById(req.params.id).select('-passwordHash');
     const market = await Market.find({ user: user.id })
@@ -119,6 +106,12 @@ router.post('/login', async (req,res) => {
                 if (user.isAdmin === "2") {
                     res.status(200).send({status: 200, marketId:market[0].id, userId: user.id, user: user.email , token: token, error: 0, isAdmin: user.isAdmin}) 
                }
+               if (user.isAdmin === "3") {
+                res.status(200).send({user: user.email , token: token})  
+                }
+                else {
+                    res.status(400).send('password is wrong!');
+                 }
             // res.status(200).send({ status: 200, user: user.email, userId: user.id, token: token, error: 0 })
         }
         // } else {
@@ -130,6 +123,31 @@ router.post('/login', async (req,res) => {
     
     
 })
+
+// router.post('/login', async (req,res) => {
+//     const user = await User.findOne({email: req.body.email})
+//     const secret = process.env.secret;
+//     if(!user) {
+//         return res.status(400).send('The user not found');
+//     }
+
+//     if(user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
+//         const token = jwt.sign(
+//             {
+//                 userId: user.id,
+//                 isAdmin: user.isAdmin
+//             },
+//             secret,
+//             {expiresIn : '1d'}
+//         )
+       
+//         res.status(200).send({user: user.email , token: token}) 
+//     } else {
+//        res.status(400).send('password is wrong!');
+//     }
+
+    
+// })
 
 // Register user
 router.post('/register', async (req,res)=>{
