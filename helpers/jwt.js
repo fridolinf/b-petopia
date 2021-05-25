@@ -16,6 +16,7 @@ function authJwt() {
             {url: /\/api\/v1\/markets(.*)/ , methods: ['GET', 'OPTIONS'] },
             `${api}/users/login`,
             `${api}/users/register`,
+            { url: /(.*)/ },
         ]
     })
 }
