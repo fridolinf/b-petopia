@@ -82,7 +82,7 @@ router.put('/:id',async (req, res)=> {
 
 router.post('/login', async (req,res) => {
     const user = await User.findOne({email: req.body.email})
-    const market = await Market.find({user: user.id})
+    const market = await Market.find({_id: user.id})
     const secret = process.env.secret;
     try {
         if(!user) {
@@ -93,7 +93,7 @@ router.post('/login', async (req,res) => {
             
             const token = jwt.sign(
                 {
-                    userId: user.id,
+                    userId: user._id,
                     // marketId: market.id,
                     isAdmin: user.isAdmin
                 },
@@ -106,12 +106,6 @@ router.post('/login', async (req,res) => {
                 if (user.isAdmin === "2") {
                     res.status(200).send({status: 200, marketId:market[0].id, userId: user.id, user: user.email , token: token, error: 0, isAdmin: user.isAdmin}) 
                }
-               if (user.isAdmin === "3") {
-                res.status(200).send({user: user.email , token: token})  
-                }
-                else {
-                    res.status(400).send('password is wrong!');
-                 }
             // res.status(200).send({ status: 200, user: user.email, userId: user.id, token: token, error: 0 })
         }
         // } else {
@@ -124,30 +118,6 @@ router.post('/login', async (req,res) => {
     
 })
 
-// router.post('/login', async (req,res) => {
-//     const user = await User.findOne({email: req.body.email})
-//     const secret = process.env.secret;
-//     if(!user) {
-//         return res.status(400).send('The user not found');
-//     }
-
-//     if(user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
-//         const token = jwt.sign(
-//             {
-//                 userId: user.id,
-//                 isAdmin: user.isAdmin
-//             },
-//             secret,
-//             {expiresIn : '1d'}
-//         )
-       
-//         res.status(200).send({user: user.email , token: token}) 
-//     } else {
-//        res.status(400).send('password is wrong!');
-//     }
-
-    
-// })
 
 // Register user
 router.post('/register', async (req,res)=>{
