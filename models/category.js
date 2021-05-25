@@ -5,6 +5,11 @@ const categorySchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    tipe: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Tipe',
+        required: true
+    },
     icon: {
         type: String,
     },

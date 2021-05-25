@@ -28,16 +28,25 @@ const usersRoutes = require('./routers/users');
 const ordersRoutes = require('./routers/orders');
 const artikelsRoutes = require('./routers/artikels');
 const marketsRoutes = require('./routers/markets');
-const api = process.env.API_URL;
+const kelolaUserRoutes = require('./routers/admin/kelolauser');
+const kelolaFaqRoutes = require('./routers/admin/kelolaFaq');
 
+// server
+const api = process.env.API_URL;
 const port = process.env.PORT || 3001;
 
+// user
 app.use(`${api}/categories`, categoriesRoutes);
 app.use(`${api}/products`, productsRoutes);
 app.use(`${api}/users`, usersRoutes);
 app.use(`${api}/orders`, ordersRoutes);
 app.use(`${api}/artikels`, artikelsRoutes);
 app.use(`${api}/markets`, marketsRoutes);
+
+// admin
+app.use(`${api}/kelolafaq`, kelolaFaqRoutes);
+app.use(`${api}/kelolauser`, kelolaUserRoutes);
+
 //Database
 mongoose.connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true,

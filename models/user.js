@@ -19,11 +19,15 @@ const userSchema = new mongoose.Schema({
     },
     isAdmin: {
         type: String,
-        default: "1",
+        default: "3",
     },
     address: {
         type: String,
         default: ''
+    },
+    dateCreated: {
+        type: Date,
+        default: Date.now,
     },
 
 });

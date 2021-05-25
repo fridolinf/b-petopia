@@ -22,12 +22,14 @@ router.get('/:id', async(req,res)=>{
 
 
 
-router.post('/', async (req,res)=>{
+router.post('/tambahcategory/habispakai', async (req, res) => {
     let category = new Category({
         name: req.body.name,
+        tipe: "608d5b316a3623372c02d48f",
         icon: req.body.icon,
         color: req.body.color
     })
+    
     category = await category.save();
 
     if(!category)

@@ -5,19 +5,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Market } = require('../models/market');
 
-router.get(`/`, async (req, res) => {
-    const userList = await User.find().select('-passwordHash');
-    try {
-        if (!userList) {
-            res.status(500).json({ success: false })
-        }
-        res.send(userList);
-    
-    } catch (error) {
-    
-    }
-})
-
 router.get('/:id', async(req,res)=>{
     const user = await User.findById(req.params.id).select('-passwordHash');
     const market = await Market.find({ user: user.id })
