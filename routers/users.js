@@ -118,7 +118,9 @@ router.post('/login', async (req,res) => {
                }
                 if (user.isAdmin === "2") {
                     res.status(200).send({status: 200, marketId:market[0].id, userId: user.id, user: user.email , token: token, error: 0, isAdmin: user.isAdmin}) 
-               }
+               } if (user.isAdmin === "3") {
+                    res.status(200).send({user: user.email , token: token}) 
+}
             // res.status(200).send({ status: 200, user: user.email, userId: user.id, token: token, error: 0 })
         }
         // } else {
