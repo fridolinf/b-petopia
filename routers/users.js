@@ -82,7 +82,8 @@ router.put('/:id',async (req, res)=> {
 
 router.post('/login', async (req,res) => {
     const user = await User.findOne({email: req.body.email})
-    const market = await Market.find({_id: user.id})
+    const market = await Market.find({ user: user.id })
+    console.log(market);
     const secret = process.env.secret;
     try {
         if(!user) {
@@ -93,7 +94,7 @@ router.post('/login', async (req,res) => {
             
             const token = jwt.sign(
                 {
-                    userId: user._id,
+                    userId: user.id,
                     // marketId: market.id,
                     isAdmin: user.isAdmin
                 },
@@ -106,11 +107,14 @@ router.post('/login', async (req,res) => {
                 if (user.isAdmin === "2") {
                     res.status(200).send({status: 200, marketId:market[0].id, userId: user.id, user: user.email , token: token, error: 0, isAdmin: user.isAdmin}) 
                }
-            // res.status(200).send({ status: 200, user: user.email, userId: user.id, token: token, error: 0 })
+                if (user.isAdmin === "3") {
+                    res.status(200).send({status: 200, userId: user.id, user: user.email , token: token, error: 0, isAdmin: user.isAdmin}) 
+               }
+           console.log(market);
         }
-        // } else {
-        //    res.status(500).send({status:500, message: "password atau email salah!", error: 1});
-        // }    
+        else {
+           res.status(500).send({status:500, message: "password atau email salah!", error: 1});
+        }    
     } catch (error) {
         res.status(404).send({status:404, message:"Page Not Found"});
     }
@@ -129,6 +133,7 @@ router.post('/register', async (req,res)=>{
         isAdmin: req.body.isAdmin,
         address: req.body.address,
     })
+    
     user = await user.save();
 
     if(!user)
