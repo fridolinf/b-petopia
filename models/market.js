@@ -6,6 +6,10 @@ const marketSchema = mongoose.Schema({
         ref: 'User',
         required: true
     },
+    statusMarket: {
+        type: Boolean,
+        default: false,
+    },
     marketName: {
         type: String,
         required: true,

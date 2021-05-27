@@ -124,7 +124,8 @@ router.post('/login', async (req,res) => {
 
 
 // Register user
-router.post('/register', async (req,res)=>{
+router.post('/register', async (req, res) => {
+    
     let user = new User({
         name: req.body.name,
         email: req.body.email,
@@ -143,9 +144,11 @@ router.post('/register', async (req,res)=>{
 })
 
 //REGISTER Supplier 
-router.post('/register/:id/seller', async (req,res)=>{
+router.post('/register/:id/seller', async (req, res) => {
+
     let market = new Market({
         user: req.params.id,
+        status: "0",
         marketName: req.body.marketName,
         description: req.body.description,
     })

@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     },
     isAdmin: {
         type: String,
-        default: "3",
+        default: "2",
     },
     address: {
         type: String,
