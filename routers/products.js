@@ -85,11 +85,6 @@ router.get(`/:id`, async (req, res) =>{
 //GET PRODUCTS TAB HABISPAKAI
 router.get(`/:id/habispakai/`, async (req, res) => {
     const market = await Market.findById(req.params.id)
-    // const tipe = await Tipe.findOne({name: "habis pakai"})
-    // const tipe = await Tipe.find({_id: ""})
-    // const newTipe = await Product.find({ tipe: tipe.id })
-//     const category = await Category.find({id: productList.})
-//   console.log(category)
     let filter = {
         market: market.id,
         tipe: "608d5adf6a3623372c02d48d",

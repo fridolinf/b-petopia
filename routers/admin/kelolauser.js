@@ -21,21 +21,10 @@ router.get(`/:filter`, async (req, res) => {
     
     }
 })
-router.get(`/supplier`, async (req, res) => {
-    
-    const userList = await User.find().select('-passwordHash');
-    try {
-        if (!userList) {
-            res.status(500).json({ success: false })
-        }
-        res.send(userList);
-    
-    } catch (error) {
-    
-    }
-})
 
-router.get('/detail/:id', async(req,res)=>{
+
+// detail suppplier
+router.get('/:id', async(req,res)=>{
     const user = await User.findById(req.params.id).select('-passwordHash');
     const market = await Market.find({ user: user.id })
     let newMarket = {
@@ -48,11 +37,61 @@ router.get('/detail/:id', async(req,res)=>{
         marketId: market[0].id,
         marketName: market[0].marketName
     }
+    console.log(market.id);
     
     if(!user) {
         res.status(500).json({message: 'The user with the given ID was not found.'})
     } 
     res.status(200).send(newMarket);
+})
+
+
+// ambil semua data verifikasi supplier
+router.get(`/verifikasi/:filter`, async (req, res) => {
+    const user = await User.findById(req.params.id)
+    let filter = {
+        statusMarket: req.params.filter, //filter = false
+    };
+   
+    const daftarUserVerifikasi = await Market.find(filter).populate('user');
+    try {
+        if (!daftarUserVerifikasi) {
+            res.status(500).json({ success: false })
+        }
+        res.send(daftarUserVerifikasi);
+    
+    } catch (error) {
+    
+    }
+})
+
+
+//ACC VERIFIKASI SELLER 
+router.put('/accseller/:id', async (req, res) => {    
+    const market = await Market.findByIdAndUpdate(
+        req.params.id,
+        {
+            statusMarket: true,
+        },
+        { new: true}
+    )
+    if(!market)
+    return res.status(400).send('the market cannot be created!')
+
+    res.send(market);
+})
+
+// Tolak Verifikasi
+router.delete('/refuseseller/:id', async (req, res) => {    
+    Market.findByIdAndRemove(req.params.id).then(market =>{
+        if(market) {
+            return res.status(200).json({success: true, message: 'the market is deleted!'})
+        } else {
+            return res.status(404).json({success: false , message: "market not found!"})
+        }
+    }).catch(err=>{
+       return res.status(500).json({success: false, error: err}) 
+    })
 })
 
 
