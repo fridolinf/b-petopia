@@ -90,7 +90,7 @@ router.put('/:id',async (req, res)=> {
     res.send(user);
 })
 
-router.post('/login', async (req,res) => {
+router.post('/loginwebsite', async (req,res) => {
     const user = await User.findOne({email: req.body.email})
     const market = await Market.find({ user: user.id })
     console.log(market);
@@ -132,6 +132,30 @@ router.post('/login', async (req,res) => {
     
 })
 
+router.post('/login', async (req,res) => {
+    const user = await User.findOne({email: req.body.email})
+    const secret = process.env.secret;
+    if(!user) {
+        return res.status(400).send('The user not found');
+    }
+
+    if(user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
+        const token = jwt.sign(
+            {
+                userId: user.id,
+                isAdmin: user.isAdmin
+            },
+            secret,
+            {expiresIn : '1d'}
+        )
+       
+        res.status(200).send({userId: user.id, user: user.email , token: token}) 
+    } else {
+       res.status(400).send('password is wrong!');
+    }
+
+    
+})
 
 // Register user
 router.post('/register', async (req,res)=>{
