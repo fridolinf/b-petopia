@@ -50,6 +50,7 @@ router.get(`/`, async (req, res) =>{
     res.send(productList);
    
 })
+
 router.get(`/:idmarket`, async (req, res) =>{
     const market = await Market.findById(req.params.id)
     let filter = {
@@ -69,6 +70,7 @@ router.get(`/:idmarket`, async (req, res) =>{
     } 
     res.send(productList);
 })
+
 // DETAIL PRODUCT
 router.get(`/:id`, async (req, res) =>{
     const product = await Product.findById(req.params.id)
@@ -106,11 +108,6 @@ router.get(`/:id/habispakai/`, async (req, res) => {
 //GET PRODUCTS TAB Hotel
 router.get(`/:id/hotel/`, async (req, res) => {
     const market = await Market.findById(req.params.id)
-    // const tipe = await Tipe.findOne({name: "habis pakai"})
-    // const tipe = await Tipe.find({_id: ""})
-    // const newTipe = await Product.find({ tipe: tipe.id })
-//     const category = await Category.find({id: productList.})
-//   console.log(category)
     let filter = {
         market: market.id,
         tipe: "608d5b246a3623372c02d48e",
@@ -158,10 +155,7 @@ router.get(`/:id/grooming/`, async (req, res) => {
 
 // Tambah Produk pake id market
 router.post(`/supplier/tambahproduk/:id`, uploadOptions.single('image'),  async (req, res) =>{
-    // const file = req.file;
-    // if(!file) return res.status(400).send('File Tidak Ada')
-    // const fileName = req.file.filename
-    // const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+    
     let product = new Product({
         market: req.params.id,
         name: req.body.name,
@@ -176,9 +170,6 @@ router.post(`/supplier/tambahproduk/:id`, uploadOptions.single('image'),  async 
         price: req.body.price,
         category: req.body.category,
         countInStock: req.body.countInStock,
-        // rating: req.body.rating,
-        // numReviews: req.body.numReviews,
-        // isFeatured: req.body.isFeatured,
     })
 
     product = await product.save();
@@ -198,7 +189,6 @@ router.put('/supplier/updateproduk/:id', uploadOptions.single('image'),async (re
 
     const product = await Product.findById(req.params.id);
     if(!product) return res.status(400).send('Invalid Product');
-//  frelly
 
     const updatedProduct = await Product.findByIdAndUpdate(
         req.params.id,

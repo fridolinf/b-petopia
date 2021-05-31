@@ -10,7 +10,7 @@ const artikelSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    isiBerita: {
+    isi: {
         type: String,
         default: true
     },
