@@ -81,7 +81,7 @@ router.post(`/orderproduct`,  async (req, res) =>{
     
     let parameter = {
         "transaction_details": {
-            "order_id": "YOUR-ORDERID-123456",
+            "order_id": "YOUR-ORDEID-123456",
             "gross_amount": product.price * req.body.quantity,
         },
         "credit_card":{
