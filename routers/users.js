@@ -5,6 +5,28 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Market } = require('../models/market');
 
+// detail suppplier
+router.get('/:id', async(req,res)=>{
+    const user = await User.findById(req.params.id).select('-passwordHash');
+    const market = await Market.find({ user: user.id })
+    let newMarket = {
+        userId: user.id,
+        isAdmin: user.isAdmin,
+        address: user.address,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        marketId: market[0].id,
+        marketName: market[0].marketName
+    }
+    console.log(market.id);
+    
+    if(!user) {
+        res.status(500).json({message: 'The user with the given ID was not found.'})
+    } 
+    res.status(200).send(newMarket);
+})
+
 
 router.post('/', async (req,res)=>{
     let user = new User({
@@ -98,10 +120,6 @@ router.post('/loginwebsite', async (req,res) => {
                 if (user.isAdmin === "2") {
                     res.status(200).send({status: 200, marketId:market[0].id, userId: user.id, user: user.email , token: token, error: 0, isAdmin: user.isAdmin}) 
                }
-                if (user.isAdmin === "3") {
-                    res.status(200).send({status: 200, userId: user.id, user: user.email , token: token, error: 0, isAdmin: user.isAdmin}) 
-               }
-           console.log(market);
         }
         else {
            res.status(500).send({status:500, message: "password atau email salah!", error: 1});

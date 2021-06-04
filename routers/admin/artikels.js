@@ -74,7 +74,7 @@ router.get(`/detail/:id`, async (req, res) =>{
     res.send(artikel);
 })
 
-router.put('updateartikel/:id', uploadOptions.single('image'), async (req, res) => {
+router.put('/updateartikel/:id', uploadOptions.single('image'), async (req, res) => {
     
     if(!mongoose.isValidObjectId(req.params.id)) {
        return res.status(400).send('Invalid Artikel Id')

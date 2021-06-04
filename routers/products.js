@@ -51,25 +51,25 @@ router.get(`/`, async (req, res) =>{
    
 })
 
-router.get(`/:idmarket`, async (req, res) =>{
-    const market = await Market.findById(req.params.id)
-    let filter = {
-        market: market.id
-    };
+// router.get(`/:idmarket`, async (req, res) =>{
+//     const market = await Market.findById(req.params.id)
+//     let filter = {
+//         market: market.id
+//     };
     
-    if(req.query.categories)
-    {
-         filter = {category: req.query.categories.split(',')}
-    }
+//     if(req.query.categories)
+//     {
+//          filter = {category: req.query.categories.split(',')}
+//     }
 
-    const productList = await Product.find(filter)
-    .populate('category');
+//     const productList = await Product.find(filter)
+//     .populate('category');
 
-    if(!productList) {
-        res.status(500).json({success: false})
-    } 
-    res.send(productList);
-})
+//     if(!productList) {
+//         res.status(500).json({success: false})
+//     } 
+//     res.send(productList);
+// })
 
 // DETAIL PRODUCT
 router.get(`/:id`, async (req, res) =>{

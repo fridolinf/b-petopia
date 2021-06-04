@@ -7,24 +7,52 @@ const { Market } = require('../../models/market');
 
 // ambil semua data user
 router.get(`/:filter`, async (req, res) => {
-    let filter = {
-        isAdmin: req.params.filter
-        };
-    const userList = await User.find(filter).select('-passwordHash');
+    const { filter } = req.params;
     try {
-        if (!userList) {
-            res.status(500).json({ success: false })
+        if (filter === "true") {
+            const market = await Market.find()
+            if (market) {
+                let array = [];
+                const filtered = market.filter((v, i, a) => {
+                    return v.statusMarket === true
+                });
+
+                for (let i in filtered) {
+                        const userList = await User.findOne({ _id: filtered[i].user });
+                        if (userList) {
+                            array.push(userList)
+                        } else {
+                            console.log("masuk else", userList);
+                        }
+                }
+                res.send({data: array});
+            } else {
+                console.log("masuk else 1", filter);
+            }
+        } else {
+            const market = await Market.find()
+            const filteredFalse = market.filter((v, i, a) => {
+                return v.statusMarket === false
+            });
+            let arrayFalse = [];
+            for (let i in filteredFalse) {
+                const userList = await User.findOne({ _id: filteredFalse[i].user });
+                if (userList) {
+                    arrayFalse.push(userList)
+                } else {
+                    console.log("masuk else", userList);
+                }
+            }
+            res.send({data: arrayFalse});
         }
-        res.send(userList);
-    
     } catch (error) {
-    
+        console.log(error, ": error");
     }
 })
 
 
 // detail suppplier
-router.get('/:id', async(req,res)=>{
+router.get('/detail/:id', async(req,res)=>{
     const user = await User.findById(req.params.id).select('-passwordHash');
     const market = await Market.find({ user: user.id })
     let newMarket = {
@@ -107,22 +135,13 @@ router.delete('/:id', (req, res)=>{
     })
 })
 
-router.put('/:id',async (req, res)=> {
+router.put('/updateuser/:id',async (req, res)=> {
 
-    const userExist = await User.findById(req.params.id);
-    let newPassword
-    if(req.body.password) {
-        newPassword = bcrypt.hashSync(req.body.password, 10)
-    } else {
-        newPassword = userExist.passwordHash;
-    }
-
-    const user = await User.findByIdAndUpdate(
+    const updateUser = await User.findByIdAndUpdate(
         req.params.id,
         {
             name: req.body.name,
             email: req.body.email,
-            passwordHash: newPassword,
             phone: req.body.phone,
             isAdmin: req.body.isAdmin,
             street: req.body.street,
@@ -130,14 +149,15 @@ router.put('/:id',async (req, res)=> {
             zip: req.body.zip,
             city: req.body.city,
             country: req.body.country,
+            
         },
         { new: true}
     )
 
-    if(!user)
-    return res.status(400).send('the user cannot be created!')
+    if(!updateUser)
+    return res.status(400).send('the faq cannot be created!')
 
-    res.send(user);
+    res.send(updateUser);
 })
 
 
