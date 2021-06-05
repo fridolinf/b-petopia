@@ -94,14 +94,14 @@ router.put('/:id',async (req, res)=> {
 })
 
 router.post('/loginwebsite', async (req,res) => {
-    const user = await User.findOne({email: req.body.email})
-    const market = await Market.find({ user: user.id })
-    console.log(market);
-    const secret = process.env.secret;
     try {
+        const user = await User.findOne({email: req.body.email})
+        
+        const secret = process.env.secret;
         if(!user) {
-            return res.status(400).send('The user not found');
+            return res.status(400).send('password atau email salah!');
         }
+        const market = await Market.find({ user: user.id })
     
         if (user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
             
@@ -117,9 +117,10 @@ router.post('/loginwebsite', async (req,res) => {
                 if (user.isAdmin === "1") {
                     res.status(200).send({status: 200,  userId: user.id, user: user.email , token: token, error: 0, isAdmin: user.isAdmin}) 
                }
-                if (user.isAdmin === "2") {
-                    res.status(200).send({status: 200, marketId:market[0].id, userId: user.id, user: user.email , token: token, error: 0, isAdmin: user.isAdmin}) 
-               }
+                if (user.isAdmin === "2" && market[0].statusMarket === true) {
+                    res.status(200).send({status: 200, marketId:market[0].id, userId: user.id, user: user.email , token: token, error: 0, isAdmin: "2"}) 
+            }
+            console.log(market[0].statusMarket);
         }
         else {
            res.status(500).send({status:500, message: "password atau email salah!", error: 1});
