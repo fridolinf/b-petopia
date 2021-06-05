@@ -124,71 +124,52 @@ router.post('/:id', async (req,res)=>{
 
 
 // // Buat Order
-// router.post(`/orderproduct`,  async (req, res) =>{
-//     const user = await User.findById(req.body.user);
-//     const product = await Product.findById(req.body.product);
-    
-//     // Create Snap API instance
-//     let snap = new midtransClient.Snap({
+// router.post('/buatorder/:id', async (req,res)=>{
+//     const user = await User.findById(req.params.id)
+//         // Create Snap API instance
+//         let snap = new midtransClient.Snap({
 //             // Set to true if you want Production Environment (accept real transaction).
 //             isProduction : false,
 //             serverKey : 'SB-Mid-server-GwCpjRVG8Bm7izzEFipF9m2D'
 //         });
-    
-//     let parameter = {
-//         "transaction_details": {
-//             "order_id": "YOUR-ORDEID-123456",
-//             "gross_amount": product.price * req.body.quantity,
-//         },
-//         "credit_card":{
-//             "secure" : true
-//         },
-//         "customer_details": {
-//             "first_name": user.name,
-//             "email": user.email,
-//             "phone": user.phone
-//         }
-//     };
-    
-//     const data = await snap.createTransaction(parameter)
-//         .then(async ( transaction)=>{
-//             // transaction token
-//            return transaction
-//         })
 
-//         newOrderItem = await newOrderItem.save();
+//         let parameter = {
+//             "transaction_details": {
+//                 "order_id": "ID1234",
+//                 "gross_amount": order.product.price * order.quantity,
+//             },
+//             "credit_card":{
+//                 "secure" : true
+//             },
+//             "customer_details": {
+//                 "first_name": user.name,
+//                 "email": user.email,
+//                 "phone": req.body.phone
+//             }
+//         };
 
-//         return newOrderItem._id;
-//     }))
-
-//     const orderItemsIdsResolved = await orderItemsIds;
-
-//     const totalPrices = await Promise.all(orderItemsIdsResolved.map(async (orderItemId)=>{
-//         const orderItem = await OrderItem.findById(orderItemId).populate('product', 'price');
-//         const totalPrice = orderItem.product.price * orderItem.quantity;
-//         return totalPrice
-//     }))
-
-//     const totalPrice = totalPrices.reduce((a,b) => a +b , 0);
-//     console.log(totalPrice);
+//         const data = await snap.createTransaction(parameter)
+//             .then(async ( transaction)=>{
+//                 // transaction token
+//             return transaction
+//             })
 
 //     let order = new Order({
-//         orderItems: orderItemsIdsResolved,
-//         street: req.body.street,
-//         apartment: req.body.apartment,
-//         zip: req.body.zip,
+//         product: req.body.product,
+//         address: req.body.address,
 //         city: req.body.city,
-//         country: req.body.country,
+//         zip: req.body.zip,
 //         phone: req.body.phone,
 //         status: req.body.status,
-//         totalPrice: totalPrice,
-//         user: req.body.user
+//         quantity: req.body.quantity,
+//         totalPrice: product.price * req.body.quantity,    
+//         payment: data.redirect_url,
+//         user: user.id,
 //     })
-
 //     order = await order.save();
-
+//     console.log(order);
 //     if(!order)
-//     return res.status(500).send('order tidak bisa dibuat');
+//     return res.status(400).send('the order cannot be created!')
 
 //     res.send(order);
 // })
@@ -256,6 +237,7 @@ router.get(`/get/userorders/:userid`, async (req, res) =>{
     if(!userOrderList) {
         res.status(500).json({success: false})
     } 
+    console.log(userOrderList)
     res.send(userOrderList);
 })
 
