@@ -19,7 +19,6 @@ router.get('/:id', async(req,res)=>{
         marketId: market[0].id,
         marketName: market[0].marketName
     }
-    console.log(market.id);
     
     if(!user) {
         res.status(500).json({message: 'The user with the given ID was not found.'})
@@ -99,7 +98,7 @@ router.post('/loginwebsite', async (req,res) => {
         
         const secret = process.env.secret;
         if(!user) {
-            return res.status(400).send('password atau email salah!');
+            return res.status(400).send({status: 400, message:'Email anda belum terdaftar atau belum diverikasi sebagai Pemilik Toko!'});
         }
         const market = await Market.find({ user: user.id })
     
@@ -120,7 +119,6 @@ router.post('/loginwebsite', async (req,res) => {
                 if (user.isAdmin === "2" && market[0].statusMarket === true) {
                     res.status(200).send({status: 200, marketId:market[0].id, userId: user.id, user: user.email , token: token, error: 0, isAdmin: "2"}) 
             }
-            console.log(market[0].statusMarket);
         }
         else {
            res.status(500).send({status:500, message: "password atau email salah!", error: 1});

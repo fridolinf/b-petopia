@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Market } = require('../../models/market');
 
-// ambil semua data user
+// ambil semua data faq
 router.get(`/`, async (req, res) => {
     
     const faqList = await Faq.find();

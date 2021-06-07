@@ -3,9 +3,123 @@ const express = require('express');
 const { OrderItem } = require('../models/order-item');
 const { route } = require('./categories');
 const { User } = require('../models/user');
-
 const midtransClient = require('midtrans-client');
+const { Market } = require('../models/market');
 const router = express.Router();
+
+// =======================================ORDERS WEBSITE========================================== //
+
+// Ambil Status Pending === "3"
+router.get(`/:id/listpending`, async (req, res) => {
+    try {
+        const market = await Market.findById(req.params.id);
+        let status = {
+            market: market.id,
+            status: "3",
+        };
+        const allOrder = await Order.find(status).populate('user', 'name').populate({
+            path: 'orderItems', populate: {
+                path : 'product', populate: ('market', 'marketName')} 
+            }).sort({'dateOrdered':-1});
+            if(!allOrder) {
+                res.status(500).json({success: false})
+            }
+            res.send(allOrder);
+    } catch (error) {
+        res.send(error);
+    }
+    
+})
+
+// Ambil Status Kirim === "2"
+router.get(`/:id/listsent`, async (req, res) => {
+    try {
+        const market = await Market.findById(req.params.id);
+        let status = {
+            status: "2",
+        };
+        const sentOrder = await Order.find(status).populate('user', 'name').populate({
+            path: 'orderItems', populate: {
+                path : 'product', populate: ('market', 'marketName')} 
+            }).sort({'dateOrdered':-1});
+            if(!sentOrder) {
+                res.status(500).json({success: false})
+            }
+            res.send(sentOrder);
+    } catch (error) {
+        res.send(error);
+    }
+    
+})
+
+// Ambil Status Selesai === "1"
+router.get(`/:id/listdone`, async (req, res) => {
+    try {
+        const market = await Market.findById(req.params.id);
+        let status = {
+            status: "1",
+        };
+        const doneOrder = await Order.find(status).populate('user', 'name').populate({
+            path: 'orderItems', populate: {
+                path : 'product', populate: ('market', 'marketName')} 
+            }).sort({'dateOrdered':-1});
+            if(!doneOrder) {
+                res.status(500).json({success: false})
+            }
+            res.send(doneOrder);
+    } catch (error) {
+        res.send(error);
+    }
+    
+})
+
+
+
+// Konfirmasi Pemesanan
+router.put('/konfirmasi/:id', async (req, res) => {    
+    const konfirmasiOrder = await Order.findByIdAndUpdate(
+        req.params.id,
+        {
+            status: "2",
+        },
+        { new: true}
+    )
+    if(!konfirmasiOrder)
+    return res.status(400).send('Order Tidak dapat di konfirmasi!')
+
+    res.send(konfirmasiOrder);
+})
+
+// Kirim Pemesanan
+router.put('/kirim/:id', async (req, res) => {    
+    const kirimOrder = await Order.findByIdAndUpdate(
+        req.params.id,
+        {
+            status: "1",
+        },
+        { new: true}
+    )
+    if(!kirimOrder)
+    return res.status(400).send('Order Tidak dapat di kirim!')
+
+    res.send(kirimOrder);
+})
+
+// Hapus Data Pesanan Selesai
+router.delete('/deleteorder/:id', async (req, res) => {    
+    Order.findByIdAndRemove(req.params.id).then(deleteOrder =>{
+        if(deleteOrder) {
+            return res.status(200).json({success: true, message: 'the market is deleted!'})
+        } else {
+            return res.status(404).json({success: false , message: "market not found!"})
+        }
+    }).catch(err=>{
+       return res.status(500).json({success: false, error: err}) 
+    })
+})
+
+
+//  =========================================ORDERS WEBSITE======================================= //
 
 router.get(`/`, async (req, res) =>{
     const orderList = await Order.find().populate('user', 'name').sort({'dateOrdered':-1});
@@ -15,6 +129,8 @@ router.get(`/`, async (req, res) =>{
     } 
     res.send(orderList);
 })
+
+
 
 router.get(`/:id`, async (req, res) =>{
     const order = await Order.findById(req.params.user)
@@ -241,6 +357,6 @@ router.get(`/get/userorders/:userid`, async (req, res) =>{
     res.send(userOrderList);
 })
 
-// =======================================ORDERS WEBSITE========================================== //
+
 
 module.exports =router;
