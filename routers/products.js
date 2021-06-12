@@ -4,8 +4,6 @@ const { Category } = require('../models/category');
 const router = express.Router();
 const mongoose = require('mongoose');
 const multer = require('multer');
-const { put } = require('./categories');
-const { Router } = require('express');
 const { Market } = require('../models/market');
 
 const FILE_TYPE_MAP = {

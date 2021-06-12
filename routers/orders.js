@@ -14,12 +14,12 @@ router.get(`/:id/listpending`, async (req, res) => {
     try {
         const market = await Market.findById(req.params.id);
         let status = {
-            market: market.id,
+            market: market._id,
             status: "3",
         };
         const allOrder = await Order.find(status).populate('user', 'name').populate({
             path: 'orderItems', populate: {
-                path : 'product', populate: ('market', 'marketName')} 
+                path : 'product'} 
             }).sort({'dateOrdered':-1});
             if(!allOrder) {
                 res.status(500).json({success: false})
@@ -36,11 +36,12 @@ router.get(`/:id/listsent`, async (req, res) => {
     try {
         const market = await Market.findById(req.params.id);
         let status = {
+            market: market._id,
             status: "2",
         };
         const sentOrder = await Order.find(status).populate('user', 'name').populate({
             path: 'orderItems', populate: {
-                path : 'product', populate: ('market', 'marketName')} 
+                path : 'product'} 
             }).sort({'dateOrdered':-1});
             if(!sentOrder) {
                 res.status(500).json({success: false})
@@ -50,6 +51,7 @@ router.get(`/:id/listsent`, async (req, res) => {
         res.send(error);
     }
     
+    
 })
 
 // Ambil Status Selesai === "1"
@@ -57,11 +59,12 @@ router.get(`/:id/listdone`, async (req, res) => {
     try {
         const market = await Market.findById(req.params.id);
         let status = {
+            market: market._id,
             status: "1",
         };
         const doneOrder = await Order.find(status).populate('user', 'name').populate({
             path: 'orderItems', populate: {
-                path : 'product', populate: ('market', 'marketName')} 
+                path : 'product'} 
             }).sort({'dateOrdered':-1});
             if(!doneOrder) {
                 res.status(500).json({success: false})

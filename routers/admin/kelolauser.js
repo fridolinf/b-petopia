@@ -27,7 +27,6 @@ router.get(`/:filter`, async (req, res) => {
                 }
                 res.send({data: array});
             } else {
-                console.log("masuk else 1", filter);
             }
         } else {
             const market = await Market.find()

@@ -19,8 +19,8 @@ const marketSchema = mongoose.Schema({
         required: true
     },
     dateCreated: {
-        type: Date,
-        default: Date.now,
+        type: String,
+        default: Date,
     },
 })
 

@@ -2,8 +2,91 @@ const {User} = require('../models/user');
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const { Market } = require('../models/market');
+const { Order } = require('../models/order');
+
+// Dashboard
+
+// CHART DATA PEMASUKKAN / PENGHASILAN
+router.get(`/:id/datapemasukkan`, async (req, res) => {
+    try {
+        const market = await Market.findById(req.params.id);
+        let filter = {
+            market: market._id,
+            status: "1",
+        };
+        console.log(filter, "masuk");
+        const allIncome = await Order.find(filter);
+        
+        // console.log(allOrder, "masuk");
+            if(!allIncome) {
+                res.status(500).json({status: 500, success: false})
+        }
+        res.status(200).send({ status: 200, allIncome });
+    } catch (error) {
+        res.send(error);
+    }
+    
+})
+
+// CHART DATA Penjualan 
+router.get(`/:id/datatransaksi`, async (req, res) => {
+    try {
+        const market = await Market.findById(req.params.id);
+        let filter = {
+            market: market._id,
+            status: "1",
+        };
+        const allTransactions = await Order.find(filter).populate({ 
+            path: 'orderItems', populate: {
+                path: 'product', populate: {
+                    path: 'category', select:'name'
+                }}
+            });
+        
+            if(!allTransactions) {
+                res.status(500).json({status: 500, success: false})
+        }
+        res.status(200).send({ status: 200, allTransactions });
+    } catch (error) {
+        res.send(error);
+    }
+    
+})
+
+// DASHBOARD
+
+// Edit Supplier
+router.put('/editProfile/:id', async (req, res) => {
+    const userExist = await User.findById(req.params.id);
+    let newPassword
+    if(req.body.passwordHash) {
+        newPassword = bcrypt.hashSync(req.body.passwordHash, 10)
+    } else {
+        newPassword = userExist.passwordHash;
+    }
+
+    const userUpdate = await User.findByIdAndUpdate(
+        req.params.id,
+        {
+        address: req.body.address,
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        passwordHash: newPassword,
+        },
+        { new: true}
+    )
+
+    if (!userUpdate)
+        return res.status(400).send('the user cannot be created!')
+   
+    res.send(userUpdate);
+})
+
+// Edit Supplier
 
 // detail suppplier
 router.get('/:id', async(req,res)=>{
@@ -121,7 +204,7 @@ router.post('/loginwebsite', async (req,res) => {
             }
         }
         else {
-           res.status(500).send({status:500, message: "password atau email salah!", error: 1});
+           res.status(500).send({status:500, message: "password salah!", error: 1});
         }    
     } catch (error) {
         res.status(404).send({status:404, message:"Page Not Found"});
