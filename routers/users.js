@@ -59,7 +59,7 @@ router.get(`/:id/datatransaksi`, async (req, res) => {
 // DASHBOARD
 
 // Edit Supplier
-router.put('/editProfile/:id', async (req, res) => {
+router.put('/updateProfile/:id', async (req, res) => {
     const userExist = await User.findById(req.params.id);
     let newPassword
     if(req.body.passwordHash) {
