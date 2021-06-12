@@ -260,10 +260,10 @@ router.post('/register', async (req, res) => {
 
 //REGISTER Supplier 
 router.post('/register/:id/seller', async (req, res) => {
-
+const user = await User.findById(req.params.id)
     let market = new Market({
-        user: req.params.id,
-        status: "0",
+        user: user.id,
+        statusMarket: false,
         marketName: req.body.marketName,
         description: req.body.description,
     })

@@ -30,7 +30,7 @@ const marketsRoutes = require('./routers/markets');
 const kelolaUserRoutes = require('./routers/admin/kelolauser');
 const kelolaFaqRoutes = require('./routers/admin/kelolaFaq');
 const artikelsRoutes = require('./routers/admin/artikels');
-
+const ratingRoutes = require('./routers/ratings');
 // server
 const api = process.env.API_URL;
 const port = process.env.PORT || 3001;
@@ -41,6 +41,7 @@ app.use(`${api}/products`, productsRoutes);
 app.use(`${api}/users`, usersRoutes);
 app.use(`${api}/orders`, ordersRoutes);
 app.use(`${api}/markets`, marketsRoutes);
+app.use(`${api}/ratings`, ratingRoutes);
 
 // admin
 app.use(`${api}/kelolafaq`, kelolaFaqRoutes);

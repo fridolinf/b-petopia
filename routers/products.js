@@ -5,6 +5,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const multer = require('multer');
 const { Market } = require('../models/market');
+const {Rating} = require('../models/rating');
 
 const FILE_TYPE_MAP = {
     'image/png': 'png',
@@ -28,7 +29,10 @@ const storage = multer.diskStorage({
     }
 })
 const uploadOptions = multer({ storage: storage })
-//
+
+//get product Colaborative Filtering
+
+
 //GET PRODUCTS ALL ->ANDROID
 router.get(`/`, async (req, res) =>{
     // localhost:3000/api/v1/products?categories=2342342,234234
@@ -78,8 +82,21 @@ router.get(`/:id`, async (req, res) =>{
     if(!product) {
         res.status(500).json({success: false})
     } 
+    // console.log(product)
     res.send(product);
 })
+
+router.post(`/rating/`, async (req, res) =>{
+
+    let rating = new Rating({
+        rating: req.body.rating
+    })
+
+    if (!rating)
+        return res.status(500).send('the product cannot be updated!');
+        console.log(rating)
+    res.send(rating);
+});
 
 
 //GET PRODUCTS TAB HABISPAKAI
@@ -171,7 +188,7 @@ router.post(`/supplier/tambahproduk/:id`, uploadOptions.single('image'),  async 
     })
 
     product = await product.save();
-
+    console.log(product);
     if(!product) 
     return res.status(500).send('The product cannot be created')
 
@@ -271,7 +288,7 @@ router.get(`/get/count`, async (req, res) =>{
 
 router.get(`/get/featured/:count`, async (req, res) =>{
     const count = req.params.count ? req.params.count : 0
-    const products = await Product.find({isFeatured: true}).limit(+count);
+    const products = await Product.find({isFeatured: true}).populate('market').limit(+count);
 
     if(!products) {
         res.status(500).json({success: false})

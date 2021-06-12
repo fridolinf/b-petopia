@@ -6,6 +6,11 @@ const orderSchema = mongoose.Schema({
         ref: 'OrderItem',
         required:true
     }],
+    market:{
+        type: mongoose.Schema.Types.ObjectId,
+        // ref: 'Market',
+        required:true
+    },
     address: {
         type: String,
         required: true,

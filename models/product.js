@@ -46,7 +46,6 @@ const productSchema = mongoose.Schema({
     },
     price : {
         type: Number,
-        default:0
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
@@ -62,6 +61,9 @@ const productSchema = mongoose.Schema({
     rating: {
         type: Number,
         default: 0,
+    },
+    avgRating:{
+        type: Number,
     },
     numReviews: {
         type: Number,
