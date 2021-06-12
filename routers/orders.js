@@ -6,7 +6,6 @@ const { User } = require('../models/user');
 const midtransClient = require('midtrans-client');
 const { Market } = require('../models/market');
 const {Product } = require('../models/product');
-const midtransClient = require('midtrans-client');
 const { Rating } = require('../models/rating');
 const router = express.Router();
 
