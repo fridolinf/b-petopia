@@ -2,7 +2,6 @@ const {User} = require('../models/user');
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const { Market } = require('../models/market');
 const { Order } = require('../models/order');
@@ -204,7 +203,7 @@ router.post('/loginwebsite', async (req,res) => {
             }
         }
         else {
-           res.status(500).send({status:500, message: "password salah!", error: 1});
+           res.status(500).send({status:500, message: "password atau email salah!", error: 1});
         }    
     } catch (error) {
         res.status(404).send({status:404, message:"Page Not Found"});

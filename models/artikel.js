@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const artikelSchema = mongoose.Schema({
-        title: {
+    
+    title: {
         type: String,
         required: true,
     },
@@ -19,8 +20,8 @@ const artikelSchema = mongoose.Schema({
         required: true
     },
     dateCreated: {
-        type: String,
-        default: Date,
+        type: Date,
+        default: Date.now,
     },
 })
 
