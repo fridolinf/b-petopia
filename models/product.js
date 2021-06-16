@@ -59,8 +59,8 @@ const productSchema = mongoose.Schema({
         max: 255
     },
     rating: {
-        type: Number,
-        default: 0,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Rating'
     },
     avgRating:{
         type: Number,

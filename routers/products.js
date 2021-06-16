@@ -38,7 +38,6 @@ const uploadOptions = multer({ storage: storage })
 //GET PRODUCTS ALL ->ANDROID
 router.get(`/`, async (req, res) =>{
     // localhost:3000/api/v1/products?categories=2342342,234234
-   
     let filter = { };
     if(req.query.categories)
     {
@@ -84,21 +83,9 @@ router.get(`/:id`, async (req, res) =>{
     if(!product) {
         res.status(500).json({success: false})
     } 
-    // console.log(product)
+    console.log(product)
     res.send(product);
 })
-
-router.post(`/rating/`, async (req, res) =>{
-
-    let rating = new Rating({
-        rating: req.body.rating
-    })
-
-    if (!rating)
-        return res.status(500).send('the product cannot be updated!');
-        console.log(rating)
-    res.send(rating);
-});
 
 
 //GET PRODUCTS TAB HABISPAKAI

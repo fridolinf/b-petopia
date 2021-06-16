@@ -5,7 +5,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Market } = require('../models/market');
 const { Order } = require('../models/order');
+const multer = require('multer');
 
+const FILE_TYPE_MAP = {
+    'image/png': 'png',
+    'image/jpeg': 'jpeg',
+    'image/jpg': 'jpg',
+}
 // Dashboard
 
 // CHART DATA PEMASUKKAN / PENGHASILAN
@@ -257,14 +263,32 @@ router.post('/register', async (req, res) => {
     res.send(user);
 })
 
+const storage = multer.diskStorage({ 
+    destination: function (req, file, cb){
+        const isValid = FILE_TYPE_MAP [file.mimetype];
+        let uploadError = new Error('Tipe Image Tidak Sesuai');
+        if (isValid){
+            uploadError = null
+        }
+        cb(uploadError, 'public/uploads')
+    }, 
+    filename: function (req, file, cb){
+        const fileName = file.originalname.split(' ').join('-');
+        const extension = FILE_TYPE_MAP[file.mimetype];
+        cb(null, `${fileName}-${Date.now()}.${extension}`);
+    }
+})
+const uploadOptions = multer({ storage: storage })
 //REGISTER Supplier 
-router.post('/register/:id/seller', async (req, res) => {
+router.post('/register/:id/seller', uploadOptions.single('image'), async (req, res) => {
 const user = await User.findById(req.params.id)
     let market = new Market({
         user: user.id,
         statusMarket: false,
+        image: req.body.image,
         marketName: req.body.marketName,
         description: req.body.description,
+        alamatToko: req.body.alamatToko
     })
     market = await market.save();
 

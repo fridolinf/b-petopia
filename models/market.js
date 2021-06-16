@@ -6,6 +6,9 @@ const marketSchema = mongoose.Schema({
         ref: 'User',
         required: true
     },
+    image:{
+        type: String,  
+    },
     statusMarket: {
         type: Boolean,
         default: false,
@@ -15,6 +18,10 @@ const marketSchema = mongoose.Schema({
         required: true,
     },
     description: {
+        type: String,
+        required: true
+    },
+    alamatToko:{
         type: String,
         required: true
     },

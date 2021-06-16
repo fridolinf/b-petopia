@@ -235,12 +235,12 @@ router.post('/orderproduct/:id', async (req,res)=>{
         payment: data.redirect_url,
         user: user.id,
     })
-    // order = await order.save();
+    order = await order.save();
    
     if(!order)
     return res.status(400).send('the order cannot be created!')
     // console.log(newOrderItem.product.price)
-    // res.send(order);
+    res.send(order);
     console.log(order)
 })
 

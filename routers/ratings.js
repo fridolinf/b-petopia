@@ -6,11 +6,11 @@ const {OrderItem} = require('../models/order-item');
 const {Order} = require('../models/order');
 
 router.get('/get/totalavg/:id', async (req, res)=> {
-    const product = await Product.findById(req.params.id)
+    const product = await Product.find({product : req.params.id})
     const rating = await Rating.aggregate([
         { $group: { _id: product.id , rating : { $avg : '$rating'}}}
     ])
-
+    console.log(product.id, rating)
     if(!rating) {
         return res.status(400).send('The order sales cannot be generated')
     }
@@ -49,22 +49,22 @@ router.put('/:id',async (req, res)=> {
     res.send(order);
 })
 
-router.put('/:id',async (req, res)=> {
-    const category = await Category.findByIdAndUpdate(
-        req.params.id,
-        {
-            name: req.body.name,
-            icon: req.body.icon || category.icon,
-            color: req.body.color,
-        },
-        { new: true}
-    )
+// router.put('/:id',async (req, res)=> {
+//     const category = await Category.findByIdAndUpdate(
+//         req.params.id,
+//         {
+//             name: req.body.name,
+//             icon: req.body.icon || category.icon,
+//             color: req.body.color,
+//         },
+//         { new: true}
+//     )
 
-    if(!category)
-    return res.status(400).send('the category cannot be created!')
+//     if(!category)
+//     return res.status(400).send('the category cannot be created!')
 
-    res.send(category);
-})
+//     res.send(category);
+// })
 //jumlah user merating
 // router.get(`/get/count`, async (req, res) =>{
 //     const productCount = await Product.countDocuments((count) => count)
