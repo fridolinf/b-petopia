@@ -43,10 +43,9 @@ router.get(`/`, async (req, res) =>{
     {
          filter = {category: req.query.categories.split(',')}
     }
-
     const productList = await Product.find(filter).populate('category')
     .populate('market');
-
+    // console.log(productList.avgRating)
     if(!productList) {
         res.status(500).json({success: false})
     } 
@@ -79,14 +78,12 @@ router.get(`/:id`, async (req, res) =>{
     const product = await Product.findById(req.params.id)
     .populate('category')
     .populate('market');
-
     if(!product) {
         res.status(500).json({success: false})
     } 
-    console.log(product)
+    // console.log(product)
     res.send(product);
 })
-
 
 //GET PRODUCTS TAB HABISPAKAI
 router.get(`/:id/habispakai/`, async (req, res) => {

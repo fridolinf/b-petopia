@@ -5,7 +5,7 @@ const { route } = require('./categories');
 const { User } = require('../models/user');
 const midtransClient = require('midtrans-client');
 const { Market } = require('../models/market');
-const {Product } = require('../models/product');
+const { Product } = require('../models/product');
 const { Rating } = require('../models/rating');
 const router = express.Router();
 
@@ -107,7 +107,6 @@ router.put('/kirim/:id', async (req, res) => {
     res.send(kirimOrder);
 })
 
-// Hapus Data Pesanan Selesai
 router.delete('/deleteorder/:id', async (req, res) => {    
     Order.findByIdAndRemove(req.params.id).then(deleteOrder =>{
         if(deleteOrder) {
@@ -125,6 +124,7 @@ router.delete('/deleteorder/:id', async (req, res) => {
 
 router.get(`/`, async (req, res) =>{
     const orderList = await Order.find().populate('user', 'name').populate('orderItems').sort({'dateOrdered':-1});
+// Hapus Data Pesanan Selesai
 
     if(!orderList) {
         res.status(500).json({success: false})
@@ -191,7 +191,7 @@ router.post('/orderproduct/:id', async (req,res)=>{
         const totalPrice = orderItem.product.price * orderItem.quantity;
         return totalPrice
     }))
-
+    // console.log(orderItemsIds.product.rating)
     const totalPrice = totalPrices.reduce((a,b) => a +b , 0);
     const serverkey = process.env.SERVER_KEY;
         // Create Snap API instance
@@ -241,7 +241,7 @@ router.post('/orderproduct/:id', async (req,res)=>{
     return res.status(400).send('the order cannot be created!')
     // console.log(newOrderItem.product.price)
     res.send(order);
-    console.log(order)
+    // console.log(order)
 })
 
 
@@ -258,7 +258,7 @@ router.put('/:id',async (req, res)=> {
 
     if(!order)
     return res.status(400).send('the order cannot be created!')
-        console.log(order)
+        // console.log(order)
     res.send(order);
 })
 
