@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const { Market } = require('../../models/market');
 
 // ambil semua data faq
-router.get(`/`, async (req, res) => {
+router.get(`/datafaqs`, async (req, res) => {
     
     const faqList = await Faq.find();
     try {

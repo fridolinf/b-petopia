@@ -90,9 +90,9 @@ router.get(`/:id/habispakai/`, async (req, res) => {
     const market = await Market.findById(req.params.id)
     let filter = {
         market: market.id,
-        tipe: "608d5adf6a3623372c02d48d",
+        category: "60639690876854f4ae3feacd",
     };
-
+    console.log(filter, "filter");
     if(req.query.categories)
     {
          filter = {category: req.query.categories.split(',')}
@@ -111,7 +111,7 @@ router.get(`/:id/hotel/`, async (req, res) => {
     const market = await Market.findById(req.params.id)
     let filter = {
         market: market.id,
-        tipe: "608d5b246a3623372c02d48e",
+        category: "60639633876854f4ae3feacc",
     };
     
     if(req.query.categories)
@@ -137,7 +137,7 @@ router.get(`/:id/grooming/`, async (req, res) => {
 //   console.log(category)
     let filter = {
         market: market.id,
-        tipe: "608d5b316a3623372c02d48f",
+        category: "60639d4b4721b33eb88546f2",
     };
     
     if(req.query.categories)
@@ -167,9 +167,9 @@ router.post(`/supplier/tambahproduk/:id`, uploadOptions.single('image'),  async 
         image3: req.body.image3,
         image4: req.body.image4,
         tipe: req.body.tipe,
+        category: req.body.category,
         brand: req.body.brand,
         price: req.body.price,
-        category: req.body.category,
         countInStock: req.body.countInStock,
     })
 

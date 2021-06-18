@@ -15,46 +15,72 @@ const FILE_TYPE_MAP = {
 // Dashboard
 
 // CHART DATA PEMASUKKAN / PENGHASILAN
-router.get(`/:id/datapemasukkan`, async (req, res) => {
+// router.get(`/:id/datapemasukkan`, async (req, res) => {
+//     try {
+//         const market = await Market.findById(req.params.id);
+//         let filter = {
+//             market: market._id,
+//             status: "1",
+//         };
+//         const allIncome = await Order.find(filter).populate('orderItems');
+        
+//         // console.log(allOrder, "masuk");
+//             if(!allIncome) {
+//                 res.status(500).json({status: 500, success: false})
+//         }
+//         res.status(200).send({ status: 200, allIncome });
+//     } catch (error) {
+//         res.send(error);
+//     }
+    
+// })
+
+// CHART DATA Penjualan 
+
+router.get(`/:id/semuaPemasukkan`, async (req, res) => {
     try {
         const market = await Market.findById(req.params.id);
         let filter = {
             market: market._id,
             status: "1",
         };
-        console.log(filter, "masuk");
-        const allIncome = await Order.find(filter);
+        const allIncome = await Order.aggregate([
+            { $match: filter},
+            {
+                $group: {
+                  _id: { $dateToString: { format: "%Y-%m", date: "$dateOrdered" } },
+
+                  totalPrice: {
+                    $sum: "$totalPrice"
+                  }
+                }
+              }
+        ]).sort({ 'dateOrdered': -1 });
         
-        // console.log(allOrder, "masuk");
+        const allTransactions = await Order.aggregate([
+            { $match: filter},
+                        { "$unwind": "$orderItems"},
+
+                        { "$group": {
+                            "_id":  { $dateToString: { format: "%Y-%m", date: "$dateOrdered" } },
+                            "quantity": { "$sum": "$orderItems.quantity" } 
+                         }
+                     },
+
+            {
+                "$group": {
+                            _id:null,
+                            "quantity": { "$push": { 
+                                "date": "$_id",
+                                "quantity": "$quantity"
+                            }}
+                        }}
+        ])
+        
             if(!allIncome) {
                 res.status(500).json({status: 500, success: false})
         }
-        res.status(200).send({ status: 200, allIncome });
-    } catch (error) {
-        res.send(error);
-    }
-    
-})
-
-// CHART DATA Penjualan 
-router.get(`/:id/datatransaksi`, async (req, res) => {
-    try {
-        const market = await Market.findById(req.params.id);
-        let filter = {
-            market: market._id,
-            status: "1",
-        };
-        const allTransactions = await Order.find(filter).populate({ 
-            path: 'orderItems', populate: {
-                path: 'product', populate: {
-                    path: 'category', select:'name'
-                }}
-            });
-        
-            if(!allTransactions) {
-                res.status(500).json({status: 500, success: false})
-        }
-        res.status(200).send({ status: 200, allTransactions });
+        res.status(200).send({ status: 200, allIncome, allTransactions });
     } catch (error) {
         res.send(error);
     }
@@ -65,22 +91,13 @@ router.get(`/:id/datatransaksi`, async (req, res) => {
 
 // Edit Supplier
 router.put('/updateProfile/:id', async (req, res) => {
-    const userExist = await User.findById(req.params.id);
-    let newPassword
-    if(req.body.passwordHash) {
-        newPassword = bcrypt.hashSync(req.body.passwordHash, 10)
-    } else {
-        newPassword = userExist.passwordHash;
-    }
-
+try {
     const userUpdate = await User.findByIdAndUpdate(
         req.params.id,
         {
         address: req.body.address,
         name: req.body.name,
-        email: req.body.email,
         phone: req.body.phone,
-        passwordHash: newPassword,
         },
         { new: true}
     )
@@ -89,6 +106,11 @@ router.put('/updateProfile/:id', async (req, res) => {
         return res.status(400).send('the user cannot be created!')
    
     res.send(userUpdate);
+} catch (error) {
+    
+    res.send(error.message);
+}
+    
 })
 
 // Edit Supplier

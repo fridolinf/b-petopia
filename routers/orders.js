@@ -10,18 +10,104 @@ const { Rating } = require('../models/rating');
 const router = express.Router();
 
 // =======================================ORDERS WEBSITE========================================== //
+// DATA SEMUA ORDER (KHUSUS ADMIN)
+
+// detail Order
+router.get(`/detailOrder/:id`, async (req, res) => {
+    try {
+        const detailOrder = await Order.findById(req.params.id).populate('user', 'name').populate({
+            path: 'orderItems', populate: {
+                path : 'product', populate: 'market'} 
+            })
+    
+        if(!detailOrder) {
+            res.status(500).json({success: false})
+        } 
+        console.log(detailOrder)
+        res.send(detailOrder);        
+    } catch (error) {
+        reset.send(e.message);
+    }
+
+})
+
+// detail Order
+
+router.get(`/successTransaction`, async (req, res) => {
+    try {
+        let filter = {
+            status: "1",
+        };
+        const successTransaction = await Order.aggregate([
+            { $match: filter},
+            {
+                $group: {
+                  _id: { $dateToString: { format: "%Y-%m", date: "$dateOrdered" } },
+
+                  totalPrice: {
+                    $sum: "$totalPrice"
+                  }
+                }
+              }
+        ]).sort({'dateOrdered':-1});;
+        // const allTransactions = await Order.aggregate([
+        //                 { "$unwind": "$orderItems"},
+
+        //                 { "$group": {
+        //                     "_id":  { $dateToString: { format: "%Y-%m", date: "$dateOrdered" } },
+        //                     "value": { "$sum": "$orderItems.quantity" } 
+        //                 }},
+
+        //                 { "$group": {
+        //                     "_id": "$_id._id",
+        //                     "values": { "$push": { 
+        //                         "date": "$_id.dateOrdered",
+        //                         "value": "$value"
+        //                     }}
+        //                 }}
+        // ])
+        
+            if(!successTransaction) {
+                res.status(500).json({status: 500, success: false})
+        }
+        res.status(200).send({ status: 200, successTransaction });
+    } catch (error) {
+        res.send(error);
+    }
+    
+})
+
+router.get(`/allTransactions`, async (req, res) => {
+    try {
+        const allTransactions = await Order.find().populate('user', 'name').populate({
+            path: 'orderItems', populate: {
+                path : 'product', populate: 'market'} 
+            }).sort({'dateOrdered':-1}).limit(2);;
+        
+            if(!allTransactions) {
+                res.status(500).json({status: 500, success: false})
+        }
+        res.status(200).send({ status: 200, allTransactions });
+    } catch (error) {
+        res.send(error);
+    }
+    
+})
+
+
+// DATA SEMUA ORDER (KHUSUS ADMIN)
 
 // Ambil Status Pending === "3"
 router.get(`/:id/listpending`, async (req, res) => {
     try {
         const market = await Market.findById(req.params.id);
         let status = {
-            market: market.id,
+            market: market._id,
             status: "3",
         };
         const allOrder = await Order.find(status).populate('user', 'name').populate({
             path: 'orderItems', populate: {
-                path : 'product', populate: ('market', 'marketName')} 
+                path : 'product'} 
             }).sort({'dateOrdered':-1});
             if(!allOrder) {
                 res.status(500).json({success: false})
@@ -38,11 +124,12 @@ router.get(`/:id/listsent`, async (req, res) => {
     try {
         const market = await Market.findById(req.params.id);
         let status = {
+            market: market._id,
             status: "2",
         };
         const sentOrder = await Order.find(status).populate('user', 'name').populate({
             path: 'orderItems', populate: {
-                path : 'product', populate: ('market', 'marketName')} 
+                path : 'product'} 
             }).sort({'dateOrdered':-1});
             if(!sentOrder) {
                 res.status(500).json({success: false})
@@ -52,6 +139,7 @@ router.get(`/:id/listsent`, async (req, res) => {
         res.send(error);
     }
     
+    
 })
 
 // Ambil Status Selesai === "1"
@@ -59,11 +147,12 @@ router.get(`/:id/listdone`, async (req, res) => {
     try {
         const market = await Market.findById(req.params.id);
         let status = {
+            market: market._id,
             status: "1",
         };
         const doneOrder = await Order.find(status).populate('user', 'name').populate({
             path: 'orderItems', populate: {
-                path : 'product', populate: ('market', 'marketName')} 
+                path : 'product'} 
             }).sort({'dateOrdered':-1});
             if(!doneOrder) {
                 res.status(500).json({success: false})
@@ -135,7 +224,7 @@ router.get(`/`, async (req, res) =>{
 
 
 router.get(`/:id`, async (req, res) =>{
-    const order = await Order.findById(req.params.id)
+    const order = await Order.findById(req.params.user)
     .populate('user', 'name')
     .populate({ 
         path: 'orderItems', populate: {
@@ -145,35 +234,33 @@ router.get(`/:id`, async (req, res) =>{
     if(!order) {
         res.status(500).json({success: false})
     } 
-    // console.log(order)
+    console.log(order)
     res.send(order);
 })
 
 
-
-// router.get('/:id/teset', async(req,res)=>{
-//     const user = await User.findById(req.params.id);
-//     const order = await Order.find({ user: user.id })
-//     let newOrder = {
-//         userId: user.id,
-//         address: user.address,
-//         name: user.name,
-//         email: user.email,
-//         phone: user.phone,
-//         orderId: order[0].id,
-//     }
-//     console.log(order.id);
+router.get('/:id/teset', async(req,res)=>{
+    const user = await User.findById(req.params.id);
+    const order = await Order.find({ user: user.id })
+    let newOrder = {
+        userId: user.id,
+        address: user.address,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        orderId: order[0].id,
+    }
+    console.log(order.id);
     
-//     if(!user) {
-//         res.status(500).json({message: 'The user with the given ID was not found.'})
-//     } 
-//     res.status(200).send(newOrder);
-// })
+    if(!user) {
+        res.status(500).json({message: 'The user with the given ID was not found.'})
+    } 
+    res.status(200).send(newOrder);
+})
 
 
-router.post('/orderproduct/:id', async (req,res)=>{
+router.post('/:id', async (req,res)=>{
     const user = await User.findById(req.params.id)
-    
     const orderItemsIds = Promise.all(req.body.orderItems.map(async (orderItem) =>{
         let newOrderItem = new OrderItem({
             quantity: orderItem.quantity,
@@ -193,16 +280,17 @@ router.post('/orderproduct/:id', async (req,res)=>{
     }))
     // console.log(orderItemsIds.product.rating)
     const totalPrice = totalPrices.reduce((a,b) => a +b , 0);
-    const serverkey = process.env.SERVER_KEY;
+
         // Create Snap API instance
         let snap = new midtransClient.Snap({
             // Set to true if you want Production Environment (accept real transaction).
             isProduction : false,
-            serverKey : serverkey,
+            serverKey : 'SB-Mid-server-GwCpjRVG8Bm7izzEFipF9m2D'
         });
+
         let parameter = {
             "transaction_details": {
-                "order_id": `INV-${orderItemsIdsResolved}`,
+                "order_id": orderItemsIdsResolved,
                 "gross_amount": totalPrice,
             },
             "credit_card":{
@@ -211,9 +299,8 @@ router.post('/orderproduct/:id', async (req,res)=>{
             "customer_details": {
                 "first_name": user.name,
                 "email": user.email,
-                "phone": req.body.phone,
-                "address": req.body.address
-            },
+                "phone": req.body.phone
+            }
         };
 
         const data = await snap.createTransaction(parameter)
@@ -225,7 +312,6 @@ router.post('/orderproduct/:id', async (req,res)=>{
 
     let order = new Order({
         orderItems: orderItemsIdsResolved,
-        market: req.body.market,
         address: req.body.address,
         city: req.body.city,
         zip: req.body.zip,
@@ -245,16 +331,65 @@ router.post('/orderproduct/:id', async (req,res)=>{
 })
 
 
+// // Buat Order
+// router.post('/buatorder/:id', async (req,res)=>{
+//     const user = await User.findById(req.params.id)
+//         // Create Snap API instance
+//         let snap = new midtransClient.Snap({
+//             // Set to true if you want Production Environment (accept real transaction).
+//             isProduction : false,
+//             serverKey : 'SB-Mid-server-GwCpjRVG8Bm7izzEFipF9m2D'
+//         });
+
+//         let parameter = {
+//             "transaction_details": {
+//                 "order_id": "ID1234",
+//                 "gross_amount": order.product.price * order.quantity,
+//             },
+//             "credit_card":{
+//                 "secure" : true
+//             },
+//             "customer_details": {
+//                 "first_name": user.name,
+//                 "email": user.email,
+//                 "phone": req.body.phone
+//             }
+//         };
+
+//         const data = await snap.createTransaction(parameter)
+//             .then(async ( transaction)=>{
+//                 // transaction token
+//             return transaction
+//             })
+
+//     let order = new Order({
+//         product: req.body.product,
+//         address: req.body.address,
+//         city: req.body.city,
+//         zip: req.body.zip,
+//         phone: req.body.phone,
+//         status: req.body.status,
+//         quantity: req.body.quantity,
+//         totalPrice: product.price * req.body.quantity,    
+//         payment: data.redirect_url,
+//         user: user.id,
+//     })
+//     order = await order.save();
+//     console.log(order);
+//     if(!order)
+//     return res.status(400).send('the order cannot be created!')
+
+//     res.send(order);
+// })
 
 router.put('/:id',async (req, res)=> {
-    
-    const order = await Order.findByIdAndUpdate(req.params.id,
-        {status: req.body.status},
-        { new: true})
-        .populate({ 
-        path: 'orderItems', populate: {
-            path : 'product' } 
-        })
+    const order = await Order.findByIdAndUpdate(
+        req.params.id,
+        {
+            status: req.body.status,
+        },
+        { new: true}
+    )
 
     if(!order)
     return res.status(400).send('the order cannot be created!')
@@ -310,7 +445,7 @@ router.get(`/get/userorders/:userid`, async (req, res) =>{
     if(!userOrderList) {
         res.status(500).json({success: false})
     } 
-    // console.log(userOrderList)
+    console.log(userOrderList)
     res.send(userOrderList);
 })
 
