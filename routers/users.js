@@ -57,30 +57,30 @@ router.get(`/:id/semuaPemasukkan`, async (req, res) => {
               }
         ]).sort({ 'dateOrdered': -1 });
         
-        const allTransactions = await Order.aggregate([
-            { $match: filter},
-                        { "$unwind": "$orderItems"},
+        // const allTransactions = await Order.aggregate([
+        //     { $match: filter},
+        //                 { "$unwind": "$orderItems"},
 
-                        { "$group": {
-                            "_id":  { $dateToString: { format: "%Y-%m", date: "$dateOrdered" } },
-                            "quantity": { "$sum": "$orderItems.quantity" } 
-                         }
-                     },
+        //                 { "$group": {
+        //                     "_id":  { $dateToString: { format: "%Y-%m", date: "$dateOrdered" } },
+        //                     "quantity": { "$sum": "$orderItems.quantity" } 
+        //                  }
+        //              },
 
-            {
-                "$group": {
-                            _id:null,
-                            "quantity": { "$push": { 
-                                "date": "$_id",
-                                "quantity": "$quantity"
-                            }}
-                        }}
-        ])
+        //     {
+        //         "$group": {
+        //                     _id:null,
+        //                     "quantity": { "$push": { 
+        //                         "date": "$_id",
+        //                         "quantity": "$quantity"
+        //                     }}
+        //                 }}
+        // ])
         
             if(!allIncome) {
                 res.status(500).json({status: 500, success: false})
         }
-        res.status(200).send({ status: 200, allIncome, allTransactions });
+        res.status(200).send({ status: 200, allIncome });
     } catch (error) {
         res.send(error);
     }

@@ -82,7 +82,7 @@ router.get(`/allTransactions`, async (req, res) => {
         const allTransactions = await Order.find().populate('user', 'name').populate({
             path: 'orderItems', populate: {
                 path : 'product', populate: 'market'} 
-            }).sort({'dateOrdered':-1}).limit(2);;
+            }).sort({'dateOrdered':-1}).limit(5);;
         
             if(!allTransactions) {
                 res.status(500).json({status: 500, success: false})

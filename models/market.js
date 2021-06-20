@@ -29,6 +29,9 @@ const marketSchema = mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    balance: {
+        type: Number,
+    }
 })
 
 marketSchema.virtual('id').get(function () {
