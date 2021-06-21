@@ -33,8 +33,7 @@ const artikelsRoutes = require('./routers/admin/artikels');
 const ratingRoutes = require('./routers/ratings');
 // server
 const api = process.env.API_URL;
-const port = process.env.PORT || 3001;
-
+const port = process.env.PORT || 3001; // Heroku will need the PORT environment variable
 // user
 app.use(`${api}/categories`, categoriesRoutes);
 app.use(`${api}/products`, productsRoutes);
