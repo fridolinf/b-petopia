@@ -23,6 +23,7 @@ router.get(`/detailOrder/:id`, async (req, res) => {
         if(!detailOrder) {
             res.status(500).json({success: false})
         } 
+        console.log(detailOrder)
         res.send(detailOrder);        
     } catch (error) {
         reset.send(e.message);
