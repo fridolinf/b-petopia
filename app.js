@@ -33,7 +33,10 @@ const artikelsRoutes = require('./routers/admin/artikels');
 const ratingRoutes = require('./routers/ratings');
 // server
 const api = process.env.API_URL;
-const port = process.env.PORT || 3001;
+
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname + '/index.html'));
+});
 
 // user
 app.use(`${api}/categories`, categoriesRoutes);
@@ -62,7 +65,7 @@ mongoose.connect(process.env.CONNECTION_STRING, {
 })
 
 //Server
-app.listen(port, ()=>{
+app.listen(process.env.PORT || 5000, ()=>{
 
     console.log('server is running http://localhost:3001');
 })
