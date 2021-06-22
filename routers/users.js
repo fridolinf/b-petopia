@@ -127,7 +127,8 @@ router.get('/:id', async(req,res)=>{
         email: user.email,
         phone: user.phone,
         marketId: market[0].id,
-        marketName: market[0].marketName
+        marketName: market[0].marketName,
+        image: market[0].image
     }
     
     if(!user) {
