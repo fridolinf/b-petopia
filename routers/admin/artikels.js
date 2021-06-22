@@ -29,7 +29,7 @@ const uploadOptions = multer({ storage: storage })
 
 // Ambil List Artikel
 router.get(`/`, async (req, res) =>{
-    const artikelList = await Artikel.find();
+    const artikelList = await Artikel.find().sort({'dateCreated': -1});
 
     if(!artikelList) {
         res.status(500).json({success: false})

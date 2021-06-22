@@ -10,8 +10,8 @@ const bodyParser = require("body-parser")
 
 app.use(cors());
 app.options('*', cors())
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true }));
 
 
 //middleware

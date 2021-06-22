@@ -247,7 +247,6 @@ router.post('/login', async (req,res) => {
     if(!user) {
         return res.status(400).send('The user not found');
     }
-
     if(user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
         const token = jwt.sign(
             {
@@ -256,14 +255,11 @@ router.post('/login', async (req,res) => {
             },
             secret,
             {expiresIn : '1d'}
-        )
-       
+        )  
         res.status(200).send({userId: user.id, user: user.email , token: token}) 
     } else {
        res.status(400).send('password is wrong!');
-    }
-
-    
+    } 
 })
 
 // Register user
@@ -303,7 +299,7 @@ const storage = multer.diskStorage({
 })
 const uploadOptions = multer({ storage: storage })
 //REGISTER Supplier 
-router.post('/register/:id/seller', uploadOptions.single('image'), async (req, res) => {
+router.post('/register/:id/seller',uploadOptions.single('image'), async (req, res) => {
 const user = await User.findById(req.params.id)
     let market = new Market({
         user: user.id,

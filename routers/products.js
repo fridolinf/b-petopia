@@ -37,7 +37,6 @@ const uploadOptions = multer({ storage: storage })
 
 //GET PRODUCTS ALL ->ANDROID
 router.get(`/`, async (req, res) =>{
-    // localhost:3000/api/v1/products?categories=2342342,234234
     let filter = { };
     if(req.query.categories)
     {
@@ -45,7 +44,7 @@ router.get(`/`, async (req, res) =>{
     }
     const productList = await Product.find(filter).populate('category')
     .populate('market');
-    // console.log(productList.avgRating)
+
     if(!productList) {
         res.status(500).json({success: false})
     } 

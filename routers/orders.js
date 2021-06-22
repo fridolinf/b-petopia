@@ -280,17 +280,17 @@ router.post('/:id', async (req,res)=>{
     }))
     // console.log(orderItemsIds.product.rating)
     const totalPrice = totalPrices.reduce((a,b) => a +b , 0);
-
+    const serverkey = process.env.SERVER_KEY;
         // Create Snap API instance
         let snap = new midtransClient.Snap({
             // Set to true if you want Production Environment (accept real transaction).
             isProduction : false,
-            serverKey : 'SB-Mid-server-GwCpjRVG8Bm7izzEFipF9m2D'
+            serverKey : serverkey,
         });
 
         let parameter = {
             "transaction_details": {
-                "order_id": orderItemsIdsResolved,
+                "order_id": `INV-${orderItemsIdsResolved}`,
                 "gross_amount": totalPrice,
             },
             "credit_card":{
@@ -299,10 +299,12 @@ router.post('/:id', async (req,res)=>{
             "customer_details": {
                 "first_name": user.name,
                 "email": user.email,
-                "phone": req.body.phone
-            }
+                "phone": req.body.phone,
+                "address": req.body.address
+            },
+            "finish": "https://demo.midtrans.com"
         };
-
+        
         const data = await snap.createTransaction(parameter)
             .then(async ( transaction)=>{
                 // transaction token
@@ -314,6 +316,7 @@ router.post('/:id', async (req,res)=>{
         orderItems: orderItemsIdsResolved,
         address: req.body.address,
         city: req.body.city,
+        market: req.body.market,
         zip: req.body.zip,
         phone: req.body.phone,
         status: req.body.status,
