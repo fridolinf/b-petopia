@@ -22,12 +22,10 @@ router.get(`/:filter`, async (req, res) => {
                         if (userList) {
                             array.push(userList)
                         } else {
-                            console.log("masuk else", userList);
                         }
                 }
                 res.send({data: array});
             } else {
-                console.log("masuk else 1", filter);
             }
         } else {
             const market = await Market.find()
@@ -40,7 +38,6 @@ router.get(`/:filter`, async (req, res) => {
                 if (userList) {
                     arrayFalse.push(userList)
                 } else {
-                    console.log("masuk else", userList);
                 }
             }
             res.send({data: arrayFalse});
@@ -65,7 +62,6 @@ router.get('/detail/:id', async(req,res)=>{
         marketId: market[0].id,
         marketName: market[0].marketName
     }
-    console.log(market.id);
     
     if(!user) {
         res.status(500).json({message: 'The user with the given ID was not found.'})

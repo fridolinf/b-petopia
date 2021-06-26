@@ -12,6 +12,8 @@ const router = express.Router();
 // =======================================ORDERS WEBSITE========================================== //
 // DATA SEMUA ORDER (KHUSUS ADMIN)
 
+
+
 // detail Order
 router.get(`/detailOrder/:id`, async (req, res) => {
     try {
@@ -23,7 +25,6 @@ router.get(`/detailOrder/:id`, async (req, res) => {
         if(!detailOrder) {
             res.status(500).json({success: false})
         } 
-        console.log(detailOrder)
         res.send(detailOrder);        
     } catch (error) {
         reset.send(e.message);
@@ -234,7 +235,6 @@ router.get(`/:id`, async (req, res) =>{
     if(!order) {
         res.status(500).json({success: false})
     } 
-    console.log(order)
     res.send(order);
 })
 
@@ -250,7 +250,6 @@ router.get('/:id/teset', async(req,res)=>{
         phone: user.phone,
         orderId: order[0].id,
     }
-    console.log(order.id);
     
     if(!user) {
         res.status(500).json({message: 'The user with the given ID was not found.'})

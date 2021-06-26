@@ -4,6 +4,8 @@ const { User } = require('../models/user');
 const { Product } = require('../models/product');
 const router = express.Router();
 
+
+
 router.get(`/`, async (req, res) =>{
     const marketList = await Market.find();
 
@@ -84,6 +86,18 @@ router.delete('/:id', (req, res)=>{
     }).catch(err=>{
        return res.status(500).json({success: false, error: err}) 
     })
+})
+
+
+router.get(`/get/count`, async (req, res) =>{
+    const marketCount = await Market.countDocuments((count) => count)
+
+    if(!marketCount) {
+        res.status(500).json({success: false})
+    } 
+    res.send({
+        marketCount: marketCount
+    });
 })
 
 module.exports =router;

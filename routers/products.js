@@ -91,7 +91,6 @@ router.get(`/:id/habispakai/`, async (req, res) => {
         market: market.id,
         category: "60639690876854f4ae3feacd",
     };
-    console.log(filter, "filter");
     if(req.query.categories)
     {
          filter = {category: req.query.categories.split(',')}
@@ -173,7 +172,6 @@ router.post(`/supplier/tambahproduk/:id`, uploadOptions.single('image'),  async 
     })
 
     product = await product.save();
-    console.log(product);
     if(!product) 
     return res.status(500).send('The product cannot be created')
 

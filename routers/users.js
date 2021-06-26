@@ -329,6 +329,7 @@ router.delete('/:id', (req, res)=>{
     })
 })
 
+
 router.get(`/get/count`, async (req, res) =>{
     const userCount = await User.countDocuments((count) => count)
 
@@ -339,6 +340,8 @@ router.get(`/get/count`, async (req, res) =>{
         userCount: userCount
     });
 })
+
+
 
 
 module.exports =router;
