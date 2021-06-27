@@ -163,10 +163,10 @@ router.post('/', async (req,res)=>{
 //getinfo
 router.get('/getinfo/:id', async(req,res)=>{
     const user = await User.findById(req.params.id).select('-passwordHash');
-
     if(!user) {
         res.status(500).json({message: 'The user with the given ID was not found.'})
     } 
+    console.log(user)
     res.status(200).send(user);
 })
 
@@ -243,6 +243,7 @@ router.post('/loginwebsite', async (req,res) => {
 
 router.post('/login', async (req,res) => {
     const user = await User.findOne({email: req.body.email})
+
     const secret = process.env.secret;
     if(!user) {
         return res.status(400).send('The user not found');

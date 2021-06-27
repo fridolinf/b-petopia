@@ -271,13 +271,19 @@ router.post('/:id', async (req,res)=>{
         return newOrderItem._id;
     }))
     const orderItemsIdsResolved =  await orderItemsIds;
-    
+    const barang = await Promise.all(orderItemsIdsResolved.map(async (orderItemId)=>{
+        const orderItem = await OrderItem.findById(orderItemId).populate('product', 'name');
+        const barangs = orderItem.product.name;
+        return barangs
+    }))
     const totalPrices = await Promise.all(orderItemsIdsResolved.map(async (orderItemId)=>{
         const orderItem = await OrderItem.findById(orderItemId).populate('product', 'price');
         const totalPrice = orderItem.product.price * orderItem.quantity;
         return totalPrice
     }))
-    // console.log(orderItemsIds.product.rating)
+    // console.log('====================================');
+    // console.log(barang);
+    // console.log('====================================');
     const totalPrice = totalPrices.reduce((a,b) => a +b , 0);
     const serverkey = process.env.SERVER_KEY;
         // Create Snap API instance
@@ -295,21 +301,29 @@ router.post('/:id', async (req,res)=>{
             "credit_card":{
                 "secure" : true
             },
+            "item_details": [
+                {
+                  "id": req.body.orderItems[0].id,
+                  "price": totalPrices[0],
+                  "quantity": req.body.orderItems[0].quantity,
+                  "name": barang[0],
+                  "merchant_name": req.body.market
+                }
+              ],
             "customer_details": {
                 "first_name": user.name,
                 "email": user.email,
                 "phone": req.body.phone,
                 "address": req.body.address
-            },
-            "finish": "https://demo.midtrans.com"
+            }
         };
-        
+        // console.log(totalPrice.product)
         const data = await snap.createTransaction(parameter)
             .then(async ( transaction)=>{
                 // transaction token
             return transaction
             })
-
+            // console.log(data)
 
     let order = new Order({
         orderItems: orderItemsIdsResolved,
@@ -332,57 +346,6 @@ router.post('/:id', async (req,res)=>{
     // console.log(order)
 })
 
-
-// // Buat Order
-// router.post('/buatorder/:id', async (req,res)=>{
-//     const user = await User.findById(req.params.id)
-//         // Create Snap API instance
-//         let snap = new midtransClient.Snap({
-//             // Set to true if you want Production Environment (accept real transaction).
-//             isProduction : false,
-//             serverKey : 'SB-Mid-server-GwCpjRVG8Bm7izzEFipF9m2D'
-//         });
-
-//         let parameter = {
-//             "transaction_details": {
-//                 "order_id": "ID1234",
-//                 "gross_amount": order.product.price * order.quantity,
-//             },
-//             "credit_card":{
-//                 "secure" : true
-//             },
-//             "customer_details": {
-//                 "first_name": user.name,
-//                 "email": user.email,
-//                 "phone": req.body.phone
-//             }
-//         };
-
-//         const data = await snap.createTransaction(parameter)
-//             .then(async ( transaction)=>{
-//                 // transaction token
-//             return transaction
-//             })
-
-//     let order = new Order({
-//         product: req.body.product,
-//         address: req.body.address,
-//         city: req.body.city,
-//         zip: req.body.zip,
-//         phone: req.body.phone,
-//         status: req.body.status,
-//         quantity: req.body.quantity,
-//         totalPrice: product.price * req.body.quantity,    
-//         payment: data.redirect_url,
-//         user: user.id,
-//     })
-//     order = await order.save();
-//     console.log(order);
-//     if(!order)
-//     return res.status(400).send('the order cannot be created!')
-
-//     res.send(order);
-// })
 
 router.put('/:id',async (req, res)=> {
     const order = await Order.findByIdAndUpdate(
@@ -441,13 +404,13 @@ router.get(`/get/userorders/:userid`, async (req, res) =>{
     
     const userOrderList = await Order.find({user: req.params.userid}).populate({ 
         path: 'orderItems', populate: {
-            path : 'product'} 
+            path : 'product', populate: {path:'market'}} 
         }).sort({'dateOrdered': -1});
 
     if(!userOrderList) {
         res.status(500).json({success: false})
     } 
-    console.log(userOrderList)
+    // console.log(userOrderList)
     res.send(userOrderList);
 })
 
