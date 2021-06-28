@@ -156,7 +156,7 @@ router.get(`/:id/listdone`, async (req, res) => {
         };
         const doneOrder = await Order.find(status).populate('user', 'name').populate({
             path: 'orderItems', populate: {
-                path : 'product', populate:('category', 'name')} 
+                path : 'product', populate: {path:'category'}} 
             }).sort({'dateOrdered':-1});
             if(!doneOrder) {
                 res.status(500).json({success: false})
