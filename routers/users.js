@@ -44,6 +44,7 @@ router.get(`/:id/semuaPemasukkan`, async (req, res) => {
             market: market._id,
             status: "1",
         };
+        
         const allIncome = await Order.aggregate([
             { $match: filter},
             {
