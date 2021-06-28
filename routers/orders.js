@@ -11,26 +11,6 @@ const router = express.Router();
 
 // =======================================ORDERS WEBSITE========================================== //
 // Data HISTORI
-router.get(`/:id/history`, async (req, res) => {
-    try {
-        const market = await Market.findById(req.params.id);
-        let status = {
-            market: market._id,
-            status: "1",
-        };
-        const historyOrder = await Order.find(status).populate('user', 'name').populate({
-            path: 'orderItems', populate: {
-                path : 'product'} 
-            }).sort({'dateOrdered':-1});
-            if(!historyOrder) {
-                res.status(500).json({success: false})
-            }
-            res.send(historyOrder);
-    } catch (error) {
-        res.send(error);
-    }
-    
-})
 
 
 // DATA SEMUA ORDER (KHUSUS ADMIN)
@@ -176,7 +156,7 @@ router.get(`/:id/listdone`, async (req, res) => {
         };
         const doneOrder = await Order.find(status).populate('user', 'name').populate({
             path: 'orderItems', populate: {
-                path : 'product'} 
+                path : 'product', populate:('category', 'name')} 
             }).sort({'dateOrdered':-1});
             if(!doneOrder) {
                 res.status(500).json({success: false})
