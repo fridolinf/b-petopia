@@ -5,6 +5,20 @@ const {Product} = require('../models/product');
 const {OrderItem} = require('../models/order-item');
 const {Order} = require('../models/order');
 
+// ambil data Rating
+router.get(`/rating`, async (req, res) => {
+    
+    const ratingList = await Rating.find();
+    try {
+        if (!ratingList) {
+            res.status(500).json({ success: false })
+        }
+        res.send(ratingList);
+    
+    } catch (error) {
+    
+    }
+})
 
 
 // Post Rating
